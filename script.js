@@ -1,10 +1,43 @@
 const { useState, useEffect } = React;
 
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+const HOLIDAYS = [
+    { name: "NEW YEAR'S DAY", date: new Date(2025, 0, 1) },
+    { name: "VALENTINE'S DAY", date: new Date(2025, 1, 14) },
+    { name: "MEMORIAL DAY", date: new Date(2025, 4, 26) },
+    { name: "INDEPENDENCE DAY", date: new Date(2025, 6, 4) },
+    { name: "LABOR DAY", date: new Date(2025, 8, 1) },
+    { name: "HALLOWEEN", date: new Date(2025, 9, 31) },
+    { name: "THANKSGIVING", date: new Date(2025, 10, 27) },
+    { name: "CHRISTMAS", date: new Date(2025, 11, 25) }
+];
+
 function YearProgress() {
-    const [progress, setProgress] = useState(2.8);
-    const [countdown, setCountdown] = useState('');
-    const [week, setWeek] = useState(3);
-    const [season, setSeason] = useState('Winter');
+    const [progress, setProgress] = useState(2.7);
+    const [remaining, setRemaining] = useState(97.3);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [currentMonth, setCurrentMonth] = useState(0);
+    const [upcomingHolidays, setUpcomingHolidays] = useState([]);
+    const [milestones, setMilestones] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem('milestones')) || [];
+        } catch {
+            return [];
+        }
+    });
+
+    const updateHolidays = (now) => {
+        const upcoming = HOLIDAYS
+            .filter(holiday => holiday.date > now)
+            .sort((a, b) => a.date - b.date)
+            .slice(0, 3)
+            .map(holiday => ({
+                ...holiday,
+                daysUntil: Math.ceil((holiday.date - now) / (1000 * 60 * 60 * 24))
+            }));
+        setUpcomingHolidays(upcoming);
+    };
 
     useEffect(() => {
         const calculateProgress = () => {
@@ -15,25 +48,10 @@ function YearProgress() {
             const elapsed = now - start;
             const percentage = (elapsed / total) * 100;
             
-            // Calculate remaining time
-            const remaining = end - now;
-            const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-            
             setProgress(percentage);
-            setCountdown(`${days} days, ${hours} hours, ${minutes} minutes remaining in 2025`);
-            
-            // Calculate week number
-            const weekNumber = Math.ceil((now - start) / (1000 * 60 * 60 * 24 * 7));
-            setWeek(weekNumber);
-            
-            // Determine season
-            const month = now.getMonth();
-            if (month < 2 || month === 11) setSeason('Winter');
-            else if (month < 5) setSeason('Spring');
-            else if (month < 8) setSeason('Summer');
-            else setSeason('Fall');
+            setRemaining(100 - percentage);
+            setCurrentMonth(now.getMonth());
+            updateHolidays(now);
         };
 
         calculateProgress();
@@ -41,17 +59,47 @@ function YearProgress() {
         return () => clearInterval(interval);
     }, []);
 
-    const handleShare = () => {
-        // Implement share functionality here
-        alert('Share functionality would go here');
+    useEffect(() => {
+        localStorage.setItem('milestones', JSON.stringify(milestones));
+    }, [milestones]);
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+            setIsFullscreen(true);
+        } else {
+            document.exitFullscreen();
+            setIsFullscreen(false);
+        }
+    };
+
+    const addMilestone = (e) => {
+        e.preventDefault();
+        const date = e.target.date.value;
+        const description = e.target.description.value.toUpperCase();
+        if (date && description) {
+            setMilestones(prev => [...prev, { date, description }]);
+            e.target.reset();
+        }
     };
 
     return React.createElement(
         'div',
-        { className: 'container' },
+        { className: `container ${isFullscreen ? 'fullscreen' : ''}` },
         [
-            React.createElement('div', { className: 'completion-text', key: 'completion' },
-                `2025 is ${progress.toFixed(1)}% complete.`
+            React.createElement('div', { className: 'button-group', key: 'buttons' },
+                [
+                    React.createElement('button', {
+                        className: 'button',
+                        onClick: () => document.documentElement.classList.toggle('dark'),
+                        key: 'theme'
+                    }, '⚡ THEME'),
+                    React.createElement('button', {
+                        className: 'button',
+                        onClick: toggleFullscreen,
+                        key: 'fullscreen'
+                    }, isFullscreen ? 'EXIT' : 'FULLSCREEN')
+                ]
             ),
             React.createElement('div', { className: 'progress-container', key: 'progress' },
                 [
@@ -59,22 +107,88 @@ function YearProgress() {
                         className: 'progress-bar',
                         style: { width: `${progress}%` }
                     }),
-                    React.createElement('div', { className: 'remaining-text' },
-                        `${(100 - progress).toFixed(1)}% remaining.`
+                    React.createElement('div', { className: 'progress-text' },
+                        `2025 IS ${progress.toFixed(1)}% COMPLETE`
                     )
                 ]
             ),
-            React.createElement('div', { className: 'countdown-text', key: 'countdown' },
-                countdown
+            React.createElement('div', { className: 'section', key: 'calendar' },
+                [
+                    React.createElement('div', { className: 'section-title' },
+                        'MONTHLY PROGRESS'
+                    ),
+                    React.createElement('div', { className: 'month-grid' },
+                        MONTHS.map((month, index) =>
+                            React.createElement('div', {
+                                className: `month ${index === currentMonth ? 'current-month' : ''}`,
+                                key: month
+                            }, month)
+                        )
+                    )
+                ]
             ),
-            React.createElement('div', { className: 'info-text', key: 'info' },
-                `Week ${week}    ${season}`
+            React.createElement('div', { className: 'section', key: 'remaining' },
+                [
+                    React.createElement('div', { className: 'section-title' },
+                        'REMAINING'
+                    ),
+                    React.createElement('div', { className: 'remaining-text' },
+                        `${remaining.toFixed(1)}% REMAINING`
+                    )
+                ]
             ),
-            React.createElement('button', {
-                className: 'share-button',
-                onClick: handleShare,
-                key: 'share'
-            }, 'Share Progress')
+            React.createElement('div', { className: 'section', key: 'holidays' },
+                [
+                    React.createElement('div', { className: 'section-title' },
+                        'UPCOMING HOLIDAYS'
+                    ),
+                    React.createElement('div', { className: 'holiday-list' },
+                        upcomingHolidays.map(holiday =>
+                            React.createElement('div', {
+                                className: 'holiday-item',
+                                key: holiday.name
+                            }, `${holiday.name} - ${holiday.daysUntil} DAYS`)
+                        )
+                    )
+                ]
+            ),
+            React.createElement('div', { className: 'section', key: 'milestones' },
+                [
+                    React.createElement('div', { className: 'section-title' },
+                        'PERSONAL MILESTONES'
+                    ),
+                    React.createElement('form', {
+                        className: 'milestone-form',
+                        onSubmit: addMilestone
+                    }, [
+                        React.createElement('input', {
+                            type: 'date',
+                            className: 'milestone-input',
+                            name: 'date',
+                            required: true
+                        }),
+                        React.createElement('input', {
+                            type: 'text',
+                            className: 'milestone-input',
+                            name: 'description',
+                            placeholder: 'ENTER MILESTONE',
+                            required: true
+                        }),
+                        React.createElement('button', {
+                            type: 'submit',
+                            className: 'button'
+                        }, 'ADD MILESTONE')
+                    ]),
+                    React.createElement('div', { className: 'milestone-list' },
+                        milestones.map((milestone, index) =>
+                            React.createElement('div', {
+                                className: 'milestone-item',
+                                key: index
+                            }, `${milestone.date}: ${milestone.description}`)
+                        )
+                    )
+                ]
+            )
         ]
     );
 }
