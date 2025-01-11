@@ -35,6 +35,7 @@
             background: #000000;
             position: relative;
             margin-top: 8px;
+            margin-bottom: 16px;
         }
         .progress-bar {
             height: 100%;
@@ -55,6 +56,32 @@
             margin: 0;
             z-index: 1;
         }
+        .countdown {
+            color: #800000;
+            font-size: 16px;
+            margin-top: 16px;
+        }
+        .milestone {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
+            display: none;
+        }
+        @keyframes slideDown {
+            from { top: -50px; opacity: 0; }
+            to { top: 20px; opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
     </style>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -67,27 +94,73 @@
 
         function YearProgress() {
             const [progress, setProgress] = useState(0);
+            const [countdown, setCountdown] = useState('');
+            const [milestone, setMilestone] = useState('');
+            const [lastMilestone, setLastMilestone] = useState(0);
+
+            const checkMilestones = (currentProgress) => {
+                const milestones = [
+                    { threshold: 25, message: "25% of 2025 complete! Quarter way there!" },
+                    { threshold: 50, message: "Halfway through 2025!" },
+                    { threshold: 75, message: "75% of 2025 complete! Final quarter!" },
+                    { threshold: 90, message: "90% of 2025 complete! Home stretch!" },
+                    { threshold: 99, message: "99% of 2025 complete! Almost there!" }
+                ];
+
+                for (const { threshold, message } of milestones) {
+                    if (currentProgress >= threshold && lastMilestone < threshold) {
+                        setMilestone(message);
+                        setLastMilestone(threshold);
+                        setTimeout(() => setMilestone(''), 5000);
+                        break;
+                    }
+                }
+            };
+
+            const calculateTimeRemaining = () => {
+                const now = new Date();
+                const end = new Date(2026, 0, 1);
+                const total = end - now;
+
+                const days = Math.floor(total / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((total % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((total % (1000 * 60 * 60)) / (1000 * 60));
+
+                return `${days} days, ${hours} hours, ${minutes} minutes remaining in 2025`;
+            };
 
             useEffect(() => {
                 const calculateProgress = () => {
                     const now = new Date();
-                    const start = new Date(now.getFullYear(), 0, 1);
-                    const end = new Date(now.getFullYear() + 1, 0, 1);
+                    const start = new Date(2025, 0, 1);
+                    const end = new Date(2026, 0, 1);
                     const total = end - start;
                     const elapsed = now - start;
                     const percentage = (elapsed / total) * 100;
+                    
                     setProgress(percentage);
+                    setCountdown(calculateTimeRemaining());
+                    checkMilestones(percentage);
                 };
 
                 calculateProgress();
-                const interval = setInterval(calculateProgress, 3600000);
+                const interval = setInterval(calculateProgress, 60000); // Update every minute
                 return () => clearInterval(interval);
-            }, []);
+            }, [lastMilestone]);
 
             return React.createElement(
                 'div',
                 { className: 'container' },
                 [
+                    milestone && React.createElement(
+                        'div',
+                        {
+                            className: 'milestone',
+                            key: 'milestone',
+                            style: { display: milestone ? 'block' : 'none' }
+                        },
+                        milestone
+                    ),
                     React.createElement(
                         'div',
                         { 
@@ -117,6 +190,14 @@
                                 `${(100 - progress).toFixed(1)}% remaining.`
                             )
                         ]
+                    ),
+                    React.createElement(
+                        'div',
+                        {
+                            className: 'countdown',
+                            key: 'countdown'
+                        },
+                        countdown
                     )
                 ]
             );
