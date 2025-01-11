@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year Progress 2025</title>
+    <style>
+        :root {
+            --bg-color: #C0C0C0;
+            --text-color: #800000;
+            --progress-bg: #000000;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            background: var(--text-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 40px;
+            background: var(--progress-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--text-color);
+            width: 2.7%;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            z-index: 1;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid var(--text-color);
+            border-radius: 10px;
+        }
+
+        .section-title {
+            color: var(--text-color);
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .month {
+            padding: 8px;
+            background: var(--progress-bg);
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .current-month {
+            background: var(--text-color);
+        }
+
+        .remaining-text {
+            color: var(--text-color);
+            font-size: 18px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .holiday-list {
+            text-align: left;
+        }
+
+        .holiday-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(128, 0, 0, 0.1);
+            color: var(--text-color);
+        }
+
+        .milestone-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .milestone-input {
+            padding: 10px;
+            border: 1px solid var(--text-color);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .milestone-list {
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            border-radius: 0;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    
+    <script>
+        const { useState, useEffect } = React;
+
+        const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        const HOLIDAYS = [
+            { name: "New Year's Day", date: new Date(2025, 0, 1) },
+            { name: "Martin Luther King Jr. Day", date: new Date(2025, 0, 20) },
+            { name: "Valentine's Day", date: new Date(2025, 1, 14) },
+            { name: "Memorial Day", date: new Date(2025, 4, 26) },
+            { name: "Independence Day", date: new Date(2025, 6, 4) },
+            { name: "Labor Day", date: new Date(2025, 8, 1) },
+            { name: "Halloween", date: new Date(2025, 9, 31) },
+            { name: "Thanksgiving", date: new Date(2025, 10, 27) },
+            { name: "Christmas", date: new Date(2025, 11, 25) },
+            { name: "New Year's Eve", date: new Date(2025, 11, 31) }
+        ];
+
+        function YearProgress() {
+            const [progress, setProgress] = useState(2.7);
+            const [remaining, setRemaining] = useState(97.3);
+            const [isFullscreen, setIsFullscreen] = useState(false);
+            const [currentMonth, setCurrentMonth] = useState(0);
+            const [upcomingHolidays, setUpcomingHolidays] = useState([]);
+            const [milestones, setMilestones] = useState(() => {
+                try {
+                    return JSON.parse(localStorage.getItem('milestones')) || [];
+                } catch {
+                    return [];
+                }
+            });
+
+            const updateHolidays = (now) => {
+                const upcoming = HOLIDAYS
+                    .filter(holiday => holiday.date > now)
+                    .sort((a, b) => a.date - b.date)
+                    .slice(0, 3)
+                    .map(holiday => ({
+                        ...holiday,
+                        daysUntil: Math.ceil((holiday.date - now) / (1000 * 60 * 60 * 24))
+                    }));
+                setUpcomingHolidays(upcoming);
+            };
+
+            useEffect(() => {
+                const calculateProgress = () => {
+                    const now = new Date();
+                    const start = new Date(2025, 0, 1);
+                    const end = new Date(2026, 0, 1);
+                    const total = end - start;
+                    const elapsed = now - start;
+                    const percentage = (elapsed / total) * 100;
+                    
+                    setProgress(percentage);
+                    setRemaining(100 - percentage);
+                    setCurrentMonth(now.getMonth());
+                    updateHolidays(now);
+                };
+
+                calculateProgress();
+                const interval = setInterval(calculateProgress, 60000);
+                return () => clearInterval(interval);
+            }, []);
+
+            useEffect(() => {
+                localStorage.setItem('milestones', JSON.stringify(milestones));
+            }, [milestones]);
+
+            const toggleFullscreen = () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                    setIsFullscreen(true);
+                } else {
+                    document.exitFullscreen();
+                    setIsFullscreen(false);
+                }
+            };
+
+            const addMilestone = (e) => {
+                e.preventDefault();
+                const date = e.target.date.value;
+                const description = e.target.description.value;
+                if (date && description) {
+                    setMilestones(prev => [...prev, { date, description }]);
+                    e.target.reset();
+                }
+            };
+
+            return React.createElement(
+                'div',
+                { className: `container ${isFullscreen ? 'fullscreen' : ''}` },
+                [
+                    React.createElement('div', { className: 'button-group', key: 'buttons' },
+                        [
+                            React.createElement('button', {
+                                className: 'button',
+                                onClick: () => document.documentElement.classList.toggle('dark'),
+                                key: 'theme'
+                            }, '🌙 Theme'),
+                            React.createElement('button', {
+                                className: 'button',
+                                onClick: toggleFullscreen,
+                                key: 'fullscreen'
+                            }, 'Enter Fullscreen')
+                        ]
+                    ),
+                    React.createElement('div', { className: 'progress-container', key: 'progress' },
+                        [
+                            React.createElement('div', {
+                                className: 'progress-bar',
+                                style: { width: `${progress}%` }
+                            }),
+                            React.createElement('div', { className: 'progress-text' },
+                                `2025 is ${progress.toFixed(1)}% complete.`
+                            )
+                        ]
+                    ),
+                    React.createElement('div', { className: 'section', key: 'calendar' },
+                        [
+                            React.createElement('div', { className: 'section-title' },
+                                'Monthly Progress'
+                            ),
+                            React.createElement('div', { className: 'month-grid' },
+                                MONTHS.map((month, index) =>
+                                    React.createElement('div', {
+                                        className: `month ${index === currentMonth ? 'current-month' : ''}`,
+                                        key: month
+                                    }, month)
+                                )
+                            )
+                        ]
+                    ),
+                    React.createElement('div', { className: 'section', key: 'remaining' },
+                        [
+                            React.createElement('div', { className: 'section-title' },
+                                'Remaining'
+                            ),
+                            React.createElement('div', { className: 'remaining-text' },
+                                `${remaining.toFixed(1)}% remaining`
+                            )
+                        ]
+                    ),
+                    React.createElement('div', { className: 'section', key: 'holidays' },
+                        [
+                            React.createElement('div', { className: 'section-title' },
+                                'Upcoming Holidays'
+                            ),
+                            React.createElement('div', { className: 'holiday-list' },
+                                upcomingHolidays.map(holiday =>
+                                    React.createElement('div', {
+                                        className: 'holiday-item',
+                                        key: holiday.name
+                                    }, `${holiday.name} - ${holiday.daysUntil} days`)
+                                )
+                            )
+                        ]
+                    ),
+                    React.createElement('div', { className: 'section', key: 'milestones' },
+                        [
+                            React.createElement('div', { className: 'section-title' },
+                                'Personal Milestones'
+                            ),
+                            React.createElement('form', {
+                                className: 'milestone-form',
+                                onSubmit: addMilestone
+                            }, [
+                                React.createElement('input', {
+                                    type: 'date',
+                                    className: 'milestone-input',
+                                    name: 'date',
+                                    required: true
+                                }),
+                                React.createElement('input', {
+                                    type: 'text',
+                                    className: 'milestone-input',
+                                    name: 'description',
+                                    placeholder: 'Enter milestone description',
+                                    required: true
+                                }),
+                                React.createElement('button', {
+                                    type: 'submit',
+                                    className: 'button'
+                                }, 'Add Milestone')
+                            ]),
+                            React.createElement('div', { className: 'milestone-list' },
+                                milestones.map((milestone, index) =>
+                                    React.createElement('div', {
+                                        className: 'holiday-item',
+                                        key: index
+                                    }, `${milestone.date}: ${milestone.description}`)
+                                )
+                            )
+                        ]
+                    )
+                ]
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(YearProgress));
+    </script>
+</body>
+</html>
