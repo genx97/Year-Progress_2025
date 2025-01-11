@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year Progress 2025</title>
+    <style>
+        :root {
+            --bg-color: #C0C0C0;
+            --text-color: #800000;
+            --progress-bg: #000000;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            background: var(--text-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .progress-section {
+            margin: 20px 0;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 32px;
+            background: var(--progress-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--text-color);
+            width: 3%;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            z-index: 1;
+            width: 100%;
+            text-align: center;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid var(--text-color);
+        }
+
+        .card-title {
+            color: var(--text-color);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+        }
+
+        .month {
+            padding: 5px;
+            background: var(--progress-bg);
+            color: white;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .current-month {
+            background: var(--text-color);
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            border-radius: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    
+    <script>
+        const { useState, useEffect } = React;
+
+        const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        const HOLIDAYS = [
+            { name: "New Year's Day", date: "2025-01-01" },
+            { name: "Valentine's Day", date: "2025-02-14" },
+            { name: "Memorial Day", date: "2025-05-26" },
+            { name: "Independence Day", date: "2025-07-04" },
+            { name: "Labor Day", date: "2025-09-01" },
+            { name: "Thanksgiving", date: "2025-11-27" },
+            { name: "Christmas", date: "2025-12-25" }
+        ];
+
+        function YearProgress() {
+            const [progress, setProgress] = useState(3);
+            const [remaining, setRemaining] = useState(97);
+            const [isFullscreen, setIsFullscreen] = useState(false);
+            const [currentMonth, setCurrentMonth] = useState(0);
+
+            useEffect(() => {
+                const calculateProgress = () => {
+                    const now = new Date();
+                    const start = new Date(2025, 0, 1);
+                    const end = new Date(2026, 0, 1);
+                    const total = end - start;
+                    const elapsed = now - start;
+                    const percentage = (elapsed / total) * 100;
+                    setProgress(percentage);
+                    setRemaining(100 - percentage);
+                    setCurrentMonth(now.getMonth());
+                };
+
+                calculateProgress();
+                const interval = setInterval(calculateProgress, 60000);
+                return () => clearInterval(interval);
+            }, []);
+
+            const toggleFullscreen = () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                    setIsFullscreen(true);
+                } else {
+                    document.exitFullscreen();
+                    setIsFullscreen(false);
+                }
+            };
+
+            return React.createElement(
+                'div',
+                { className: `container ${isFullscreen ? 'fullscreen' : ''}` },
+                [
+                    React.createElement('div', { className: 'button-group', key: 'buttons' },
+                        [
+                            React.createElement('button', {
+                                className: 'button',
+                                onClick: () => document.documentElement.classList.toggle('dark'),
+                                key: 'theme'
+                            }, '🌙 Theme'),
+                            React.createElement('button', {
+                                className: 'button',
+                                onClick: toggleFullscreen,
+                                key: 'fullscreen'
+                            }, 'Enter Fullscreen')
+                        ]
+                    ),
+                    React.createElement('div', { className: 'progress-section', key: 'progress' },
+                        [
+                            React.createElement('div', { className: 'progress-container' },
+                                [
+                                    React.createElement('div', {
+                                        className: 'progress-bar',
+                                        style: { width: `${progress}%` }
+                                    }),
+                                    React.createElement('div', { className: 'progress-text' },
+                                        `2025 is ${progress.toFixed(1)}% complete.`
+                                    )
+                                ]
+                            )
+                        ]
+                    ),
+                    React.createElement('div', { className: 'card', key: 'calendar' },
+                        [
+                            React.createElement('div', { className: 'card-title' },
+                                'Monthly Progress'
+                            ),
+                            React.createElement('div', { className: 'month-grid' },
+                                MONTHS.map((month, index) =>
+                                    React.createElement('div', {
+                                        className: `month ${index === currentMonth ? 'current-month' : ''}`,
+                                        key: month
+                                    }, month)
+                                )
+                            )
+                        ]
+                    ),
+                    React.createElement('div', { className: 'card', key: 'remaining' },
+                        [
+                            React.createElement('div', { className: 'card-title' },
+                                'Remaining'
+                            ),
+                            React.createElement('div', {},
+                                `${remaining.toFixed(1)}% remaining`
+                            )
+                        ]
+                    )
+                ]
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(YearProgress));
+    </script>
+</body>
+</html>
