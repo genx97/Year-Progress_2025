@@ -36,6 +36,7 @@
             position: relative;
             margin-top: 8px;
             margin-bottom: 16px;
+            cursor: pointer;
         }
         .progress-bar {
             height: 100%;
@@ -74,6 +75,41 @@
             animation: slideDown 0.5s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
             display: none;
         }
+        .hover-info {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+        .additional-info {
+            color: #800000;
+            font-size: 16px;
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .share-button {
+            background: #800000;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 16px;
+            transition: background-color 0.3s;
+        }
+        .share-button:hover {
+            background: #600000;
+        }
         @keyframes slideDown {
             from { top: -50px; opacity: 0; }
             to { top: 20px; opacity: 1; }
@@ -97,6 +133,83 @@
             const [countdown, setCountdown] = useState('');
             const [milestone, setMilestone] = useState('');
             const [lastMilestone, setLastMilestone] = useState(0);
+            const [hoverInfo, setHoverInfo] = useState({ show: false, text: '', x: 0, y: 0 });
+            const [weekNumber, setWeekNumber] = useState(1);
+            const [season, setSeason] = useState('');
+
+            const getWeekNumber = (date) => {
+                const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+                const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+                return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+            };
+
+            const getSeason = (date) => {
+                const month = date.getMonth();
+                const day = date.getDate();
+                if (month < 2 || (month === 2 && day < 20)) return 'Winter';
+                if (month < 5 || (month === 5 && day < 21)) return 'Spring';
+                if (month < 8 || (month === 8 && day < 23)) return 'Summer';
+                if (month < 11 || (month === 11 && day < 21)) return 'Fall';
+                return 'Winter';
+            };
+
+            const handleShare = async () => {
+                const text = `2025 is ${progress.toFixed(1)}% complete! Track the year's progress at: https://genx97.github.io/Year-Progress_2025/`;
+                
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Year Progress 2025',
+                            text: text,
+                            url: 'https://genx97.github.io/Year-Progress_2025/'
+                        });
+                    } catch (err) {
+                        // Fallback to clipboard
+                        copyToClipboard(text);
+                    }
+                } else {
+                    copyToClipboard(text);
+                }
+            };
+
+            const copyToClipboard = (text) => {
+                navigator.clipboard.writeText(text)
+                    .then(() => {
+                        setMilestone('Copied to clipboard!');
+                        setTimeout(() => setMilestone(''), 2000);
+                    });
+            };
+
+            const handleProgressBarHover = (e, enter) => {
+                if (enter) {
+                    const rect = e.target.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const width = rect.width;
+                    const percentage = (x / width) * 100;
+                    
+                    const year = 2025;
+                    const millisInYear = 365 * 24 * 60 * 60 * 1000;
+                    const millisAtPoint = (percentage / 100) * millisInYear;
+                    const dateAtPoint = new Date(year, 0, 1);
+                    dateAtPoint.setMilliseconds(millisAtPoint);
+
+                    const formattedDate = dateAtPoint.toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    setHoverInfo({
+                        show: true,
+                        text: formattedDate,
+                        x: e.clientX,
+                        y: rect.top - 30
+                    });
+                } else {
+                    setHoverInfo({ show: false, text: '', x: 0, y: 0 });
+                }
+            };
 
             const checkMilestones = (currentProgress) => {
                 const milestones = [
@@ -140,6 +253,8 @@
                     
                     setProgress(percentage);
                     setCountdown(calculateTimeRemaining());
+                    setWeekNumber(getWeekNumber(now));
+                    setSeason(getSeason(now));
                     checkMilestones(percentage);
                 };
 
@@ -173,7 +288,9 @@
                         'div',
                         { 
                             className: 'progress-container',
-                            key: 'progress-bar-container'
+                            key: 'progress-bar-container',
+                            onMouseMove: (e) => handleProgressBarHover(e, true),
+                            onMouseLeave: (e) => handleProgressBarHover(e, false)
                         },
                         [
                             React.createElement('div', {
@@ -191,6 +308,19 @@
                             )
                         ]
                     ),
+                    hoverInfo.show && React.createElement(
+                        'div',
+                        {
+                            className: 'hover-info',
+                            style: {
+                                left: hoverInfo.x + 'px',
+                                top: hoverInfo.y + 'px',
+                                opacity: 1
+                            },
+                            key: 'hover-info'
+                        },
+                        hoverInfo.text
+                    ),
                     React.createElement(
                         'div',
                         {
@@ -198,6 +328,26 @@
                             key: 'countdown'
                         },
                         countdown
+                    ),
+                    React.createElement(
+                        'div',
+                        {
+                            className: 'additional-info',
+                            key: 'additional-info'
+                        },
+                        [
+                            React.createElement('span', { key: 'week' }, `Week ${weekNumber}`),
+                            React.createElement('span', { key: 'season' }, `${season}`)
+                        ]
+                    ),
+                    React.createElement(
+                        'button',
+                        {
+                            className: 'share-button',
+                            onClick: handleShare,
+                            key: 'share-button'
+                        },
+                        'Share Progress'
                     )
                 ]
             );
