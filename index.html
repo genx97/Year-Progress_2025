@@ -10,43 +10,50 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #D3D3D3;
+            background-color: #808080;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
-        .container {
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
+        }
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
             padding: 20px;
         }
         .progress-text {
-            color: #8B0000;
-            font-size: 24px;
-            margin-bottom: 16px;
+            color: #800000;
+            font-size: 20px;
+            margin-bottom: 8px;
             font-weight: 400;
         }
         .progress-container {
             width: 100%;
-            max-width: 300px;
-            height: 24px;
-            background: black;
+            height: 32px;
+            background: #000000;
             position: relative;
-            margin-bottom: 16px;
+            margin-top: 8px;
         }
         .progress-bar {
             height: 100%;
-            background: #8B0000;
+            background: #800000;
             transition: width 1s ease-in-out;
             position: absolute;
             left: 0;
             top: 0;
         }
         .remaining-text {
-            color: black;
+            color: #FFFFFF;
             font-size: 20px;
             font-weight: 400;
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            line-height: 32px;
+            margin: 0;
+            z-index: 1;
         }
     </style>
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -95,18 +102,21 @@
                             className: 'progress-container',
                             key: 'progress-bar-container'
                         },
-                        React.createElement('div', {
-                            className: 'progress-bar',
-                            style: { width: `${progress}%` }
-                        })
-                    ),
-                    React.createElement(
-                        'div',
-                        { 
-                            className: 'remaining-text',
-                            key: 'remaining'
-                        },
-                        `${(100 - progress).toFixed(1)}% remaining.`
+                        [
+                            React.createElement('div', {
+                                className: 'progress-bar',
+                                style: { width: `${progress}%` },
+                                key: 'progress-bar'
+                            }),
+                            React.createElement(
+                                'div',
+                                { 
+                                    className: 'remaining-text',
+                                    key: 'remaining'
+                                },
+                                `${(100 - progress).toFixed(1)}% remaining.`
+                            )
+                        ]
                     )
                 ]
             );
