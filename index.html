@@ -1,1 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year Progress 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @property --progress {
+            syntax: '<percentage>';
+            inherits: false;
+            initial-value: 0%;
+        }
+        
+        :root {
+            --hue: 223;
+            --sat: 20%;
+            --gray0: hsl(0,0%,100%);
+            --gray1: hsl(var(--hue),var(--sat),90%);
+            --gray2: hsl(var(--hue),var(--sat),80%);
+            --gray3: hsl(var(--hue),var(--sat),70%);
+            --gray4: hsl(var(--hue),var(--sat),60%);
+            --gray5: hsl(var(--hue),var(--sat),50%);
+            --gray6: hsl(var(--hue),var(--sat),40%);
+            --gray7: hsl(var(--hue),var(--sat),30%);
+            --gray8: hsl(var(--hue),var(--sat),20%);
+            --gray9: hsl(var(--hue),var(--sat),10%);
+            --primary: hsl(var(--hue),90%,50%);
+            --primary-t: hsla(var(--hue),90%,50%,0);
+            --success: hsl(153,90%,40%);
+            --danger: hsl(3,90%,60%);
+            --neutral: var(--gray5);
+            --trans-dur: 0.3s;
+            --trans-timing: cubic-bezier(0.65,0,0.35,1);
+        }
 
+        * {
+            border: 0;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--gray2);
+            font-family: 'Inter', system-ui;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--gray7);
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 20px;
+            transition: background-color var(--trans-dur) var(--trans-timing);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: var(--gray0);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all var(--trans-dur) var(--trans-timing);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .button {
+            background: var(--gray2);
+            color: var(--gray7);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', system-ui;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--trans-dur) var(--trans-timing);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translate(-150%, -50%) scale(0);
+            transition: transform var(--trans-dur) var(--trans-timing);
+            z-index: -1;
+        }
+
+        .button:hover {
+            color: var(--gray0);
+            transform: translateY(-2px);
+        }
+
+        .button:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 48px;
+            background: var(--gray2);
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            margin: 32px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, 
+                var(--primary) 0%,
+                hsl(calc(var(--hue) + 20),90%,55%) 100%
+            );
+            transition: width var(--trans-dur) var(--trans-timing);
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                hsla(var(--hue),90%,70%,0.2) 0%,
+                hsla(var(--hue),90%,70%,0) 20%
+            );
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--gray0);
+            z-index: 1;
+            width: 100%;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .section {
+            margin: 32px 0;
+            padding: 24px;
+            border-radius: 12px;
+            background: var(--gray1);
+            transition: all var(--trans-dur) var(--trans-timing);
+        }
+
+        .section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(var(--hue), 20%, 10%, 0.1);
+            background: linear-gradient(
+                135deg,
+                var(--gray1) 0%,
+                var(--gray0) 100%
+            );
+        }
+
+        .section-title {
+            color: var(--gray8);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .month {
+            padding: 12px 8px;
+            background: var(--gray2);
+            color: var(--gray7);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            transition: all var(--trans-dur) var(--trans-timing);
+        }
+
+        .current-month {
+            background: var(--primary);
+            color: var(--gray0);
+        }
+
+        .remaining-text {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-top: 16px;
+        }
+
+        .holiday-list, .milestone-list {
+            margin-top: 24px;
+        }
+
+        .holiday-item, .milestone-item {
+            padding: 16px;
+            margin-bottom: 12px;
+            background: var(--gray2);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--gray7);
+            transition: all var(--trans-dur) var(--trans-timing);
+        }
+
+        .holiday-item:hover, .milestone-item:hover {
+            background: var(--gray3);
+            transform: translateX(4px);
+        }
+
+        .milestone-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .milestone-input {
+            padding: 12px;
+            border: 2px solid var(--gray3);
+            border-radius: 8px;
+            background: var(--gray0);
+            color: var(--gray7);
+            font-family: 'Inter', system-ui;
+            font-size: 14px;
+            transition: all var(--trans-dur) var(--trans-timing);
+        }
+
+        .milestone-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            border-radius: 0;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            .button {
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+
+            .remaining-text {
+                font-size: 20px;
+            }
+        }
+
+        .dark {
+            --gray0: hsl(var(--hue),var(--sat),10%);
+            --gray1: hsl(var(--hue),var(--sat),15%);
+            --gray2: hsl(var(--hue),var(--sat),20%);
+            --gray3: hsl(var(--hue),var(--sat),25%);
+            --gray4: hsl(var(--hue),var(--sat),30%);
+            --gray5: hsl(var(--hue),var(--sat),40%);
+            --gray6: hsl(var(--hue),var(--sat),50%);
+            --gray7: hsl(var(--hue),var(--sat),60%);
+            --gray8: hsl(var(--hue),var(--sat),70%);
+            --gray9: hsl(var(--hue),var(--sat),80%);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<!-- At the end of your index.html, before </body> -->
+<script src="5.js"></script>
+</body>
+</html>
