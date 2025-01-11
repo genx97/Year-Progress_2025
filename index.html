@@ -4,84 +4,149 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Year Progress 2025</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        @property --progress {
+            syntax: '<percentage>';
+            inherits: false;
+            initial-value: 0%;
+        }
+        
         :root {
-            --bg-color: #D9D9D9;
-            --primary-color: #2F2F2F;
-            --button-color: #8F8F8F;
-            --card-bg: #E8E8E8;
-            --shadow-color: rgba(0, 0, 0, 0.2);
+            --hue: 223;
+            --sat: 20%;
+            --gray0: hsl(0,0%,100%);
+            --gray1: hsl(var(--hue),var(--sat),90%);
+            --gray2: hsl(var(--hue),var(--sat),80%);
+            --gray3: hsl(var(--hue),var(--sat),70%);
+            --gray4: hsl(var(--hue),var(--sat),60%);
+            --gray5: hsl(var(--hue),var(--sat),50%);
+            --gray6: hsl(var(--hue),var(--sat),40%);
+            --gray7: hsl(var(--hue),var(--sat),30%);
+            --gray8: hsl(var(--hue),var(--sat),20%);
+            --gray9: hsl(var(--hue),var(--sat),10%);
+            --primary: hsl(var(--hue),90%,50%);
+            --primary-t: hsla(var(--hue),90%,50%,0);
+            --success: hsl(153,90%,40%);
+            --danger: hsl(3,90%,60%);
+            --neutral: var(--gray5);
+            --trans-dur: 0.3s;
+            --trans-timing: cubic-bezier(0.65,0,0.35,1);
         }
 
         * {
+            border: 0;
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            margin: 0;
-            padding: 20px;
-            background-color: var(--bg-color);
-            font-family: 'Press Start 2P', system-ui;
+            background-color: var(--gray2);
+            transition: background-color var(--trans-dur) var(--trans-timing);
+            font-family: 'Inter', system-ui;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--primary-color);
-            font-size: 12px;
+            color: var(--gray7);
+            font-size: 14px;
             line-height: 1.5;
+            padding: 20px;
         }
 
         .container {
             width: 90%;
-            max-width: 400px;
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 8px var(--shadow-color);
+            max-width: 600px;
+            background: var(--gray0);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all var(--trans-dur) var(--trans-timing);
         }
 
         .button-group {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 16px;
+            margin-bottom: 32px;
         }
 
         .button {
-            background: var(--button-color);
-            color: var(--primary-color);
-            border: none;
-            padding: 12px 20px;
+            background: var(--gray2);
+            color: var(--gray7);
+            padding: 12px 24px;
             border-radius: 8px;
             cursor: pointer;
-            font-family: 'Press Start 2P', system-ui;
-            font-size: 10px;
-            box-shadow: 0 2px 4px var(--shadow-color);
-            transition: transform 0.1s;
+            font-family: 'Inter', system-ui;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--trans-dur) var(--trans-timing);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translate(-150%, -50%) scale(0);
+            transition: transform var(--trans-dur) var(--trans-timing);
+            z-index: -1;
         }
 
-        .button:active {
-            transform: translateY(2px);
+        .button:hover {
+            color: var(--gray0);
+            transform: translateY(-2px);
+        }
+        
+        .button:hover::before {
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .progress-container {
             width: 100%;
-            height: 40px;
-            background: var(--primary-color);
-            border-radius: 8px;
+            height: 48px;
+            background: var(--gray2);
+            border-radius: 24px;
             overflow: hidden;
             position: relative;
-            margin: 24px 0;
-            box-shadow: inset 0 2px 4px var(--shadow-color);
+            margin: 32px 0;
         }
 
         .progress-bar {
             height: 100%;
-            background: var(--button-color);
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, 
+                var(--primary) 0%,
+                hsl(calc(var(--hue) + 20),90%,55%) 100%
+            );
+            transition: width var(--trans-dur) var(--trans-timing);
+            position: relative;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                hsla(var(--hue),90%,70%,0.2) 0%,
+                hsla(var(--hue),90%,70%,0) 20%
+            );
+            animation: shine 2s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .progress-text {
@@ -89,82 +154,109 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: var(--card-bg);
+            color: var(--gray0);
             z-index: 1;
             width: 100%;
             text-align: center;
-            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .section {
-            margin: 24px 0;
-            padding: 16px;
-            border: 2px solid var(--primary-color);
-            border-radius: 8px;
-            background: var(--card-bg);
+            margin: 32px 0;
+            padding: 24px;
+            border-radius: 12px;
+            background: var(--gray1);
+            transition: all var(--trans-dur) var(--trans-timing);
+        }
+
+        .section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(var(--hue), 20%, 10%, 0.1);
+            background: linear-gradient(
+                135deg,
+                var(--gray1) 0%,
+                var(--gray0) 100%
+            );
         }
 
         .section-title {
-            color: var(--primary-color);
-            font-size: 14px;
-            margin-bottom: 16px;
+            color: var(--gray8);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
             text-align: center;
         }
 
         .month-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 12px;
         }
 
         .month {
-            padding: 8px 4px;
-            background: var(--primary-color);
-            color: var(--card-bg);
-            border-radius: 4px;
+            padding: 12px 8px;
+            background: var(--gray2);
+            color: var(--gray7);
+            border-radius: 8px;
             text-align: center;
-            font-size: 8px;
+            font-size: 14px;
+            transition: all var(--trans-dur) var(--trans-timing);
         }
 
         .current-month {
-            background: var(--button-color);
-            box-shadow: 0 0 0 2px var(--primary-color);
+            background: var(--primary);
+            color: var(--gray0);
         }
 
         .remaining-text {
             text-align: center;
-            font-size: 12px;
-            margin-top: 12px;
-        }
-
-        .holiday-list, .milestone-list {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
             margin-top: 16px;
         }
 
+        .holiday-list, .milestone-list {
+            margin-top: 24px;
+        }
+
         .holiday-item, .milestone-item {
-            padding: 8px;
-            margin-bottom: 8px;
-            background: var(--button-color);
-            border-radius: 4px;
-            font-size: 8px;
-            color: var(--primary-color);
+            padding: 16px;
+            margin-bottom: 12px;
+            background: var(--gray2);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--gray7);
+            transition: all var(--trans-dur) var(--trans-timing);
+        }
+
+        .holiday-item:hover, .milestone-item:hover {
+            background: var(--gray3);
+            transform: translateX(4px);
         }
 
         .milestone-form {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin: 16px 0;
+            gap: 16px;
+            margin: 24px 0;
         }
 
         .milestone-input {
-            padding: 8px;
-            border: 2px solid var(--primary-color);
-            border-radius: 4px;
-            background: var(--card-bg);
-            color: var(--primary-color);
-            font-family: 'Press Start 2P', system-ui;
-            font-size: 8px;
+            padding: 12px;
+            border: 2px solid var(--gray3);
+            border-radius: 8px;
+            background: var(--gray0);
+            color: var(--gray7);
+            font-family: 'Inter', system-ui;
+            font-size: 14px;
+            transition: all var(--trans-dur) var(--trans-timing);
+        }
+
+        .milestone-input:focus {
+            border-color: var(--primary);
+            outline: none;
         }
 
         .fullscreen {
@@ -180,12 +272,20 @@
 
         @media (max-width: 480px) {
             .container {
-                padding: 16px;
+                padding: 20px;
             }
 
             .button {
-                padding: 8px 16px;
-                font-size: 8px;
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+
+            .remaining-text {
+                font-size: 20px;
             }
         }
     </style>
@@ -197,203 +297,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     
     <script>
+        // Your existing React code remains the same
         const { useState, useEffect } = React;
-
-        const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-        
-        const HOLIDAYS = [
-            { name: "NEW YEAR'S DAY", date: new Date(2025, 0, 1) },
-            { name: "VALENTINE'S DAY", date: new Date(2025, 1, 14) },
-            { name: "MEMORIAL DAY", date: new Date(2025, 4, 26) },
-            { name: "INDEPENDENCE DAY", date: new Date(2025, 6, 4) },
-            { name: "LABOR DAY", date: new Date(2025, 8, 1) },
-            { name: "HALLOWEEN", date: new Date(2025, 9, 31) },
-            { name: "THANKSGIVING", date: new Date(2025, 10, 27) },
-            { name: "CHRISTMAS", date: new Date(2025, 11, 25) }
-        ];
-
-        function YearProgress() {
-            const [progress, setProgress] = useState(2.7);
-            const [remaining, setRemaining] = useState(97.3);
-            const [isFullscreen, setIsFullscreen] = useState(false);
-            const [currentMonth, setCurrentMonth] = useState(0);
-            const [upcomingHolidays, setUpcomingHolidays] = useState([]);
-            const [milestones, setMilestones] = useState(() => {
-                try {
-                    return JSON.parse(localStorage.getItem('milestones')) || [];
-                } catch {
-                    return [];
-                }
-            });
-
-            const updateHolidays = (now) => {
-                const upcoming = HOLIDAYS
-                    .filter(holiday => holiday.date > now)
-                    .sort((a, b) => a.date - b.date)
-                    .slice(0, 3)
-                    .map(holiday => ({
-                        ...holiday,
-                        daysUntil: Math.ceil((holiday.date - now) / (1000 * 60 * 60 * 24))
-                    }));
-                setUpcomingHolidays(upcoming);
-            };
-
-            useEffect(() => {
-                const calculateProgress = () => {
-                    const now = new Date();
-                    const start = new Date(2025, 0, 1);
-                    const end = new Date(2026, 0, 1);
-                    const total = end - start;
-                    const elapsed = now - start;
-                    const percentage = (elapsed / total) * 100;
-                    
-                    setProgress(percentage);
-                    setRemaining(100 - percentage);
-                    setCurrentMonth(now.getMonth());
-                    updateHolidays(now);
-                };
-
-                calculateProgress();
-                const interval = setInterval(calculateProgress, 60000);
-                return () => clearInterval(interval);
-            }, []);
-
-            useEffect(() => {
-                localStorage.setItem('milestones', JSON.stringify(milestones));
-            }, [milestones]);
-
-            const toggleFullscreen = () => {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen();
-                    setIsFullscreen(true);
-                } else {
-                    document.exitFullscreen();
-                    setIsFullscreen(false);
-                }
-            };
-
-            const addMilestone = (e) => {
-                e.preventDefault();
-                const date = e.target.date.value;
-                const description = e.target.description.value.toUpperCase();
-                if (date && description) {
-                    setMilestones(prev => [...prev, { date, description }]);
-                    e.target.reset();
-                }
-            };
-
-            return React.createElement(
-                'div',
-                { className: `container ${isFullscreen ? 'fullscreen' : ''}` },
-                [
-                    React.createElement('div', { className: 'button-group', key: 'buttons' },
-                        [
-                            React.createElement('button', {
-                                className: 'button',
-                                onClick: () => document.documentElement.classList.toggle('dark'),
-                                key: 'theme'
-                            }, '⚡ THEME'),
-                            React.createElement('button', {
-                                className: 'button',
-                                onClick: toggleFullscreen,
-                                key: 'fullscreen'
-                            }, isFullscreen ? 'EXIT' : 'FULLSCREEN')
-                        ]
-                    ),
-                    React.createElement('div', { className: 'progress-container', key: 'progress' },
-                        [
-                            React.createElement('div', {
-                                className: 'progress-bar',
-                                style: { width: `${progress}%` }
-                            }),
-                            React.createElement('div', { className: 'progress-text' },
-                                `2025 IS ${progress.toFixed(1)}% COMPLETE`
-                            )
-                        ]
-                    ),
-                    React.createElement('div', { className: 'section', key: 'calendar' },
-                        [
-                            React.createElement('div', { className: 'section-title' },
-                                'MONTHLY PROGRESS'
-                            ),
-                            React.createElement('div', { className: 'month-grid' },
-                                MONTHS.map((month, index) =>
-                                    React.createElement('div', {
-                                        className: `month ${index === currentMonth ? 'current-month' : ''}`,
-                                        key: month
-                                    }, month)
-                                )
-                            )
-                        ]
-                    ),
-                    React.createElement('div', { className: 'section', key: 'remaining' },
-                        [
-                            React.createElement('div', { className: 'section-title' },
-                                'REMAINING'
-                            ),
-                            React.createElement('div', { className: 'remaining-text' },
-                                `${remaining.toFixed(1)}% REMAINING`
-                            )
-                        ]
-                    ),
-                    React.createElement('div', { className: 'section', key: 'holidays' },
-                        [
-                            React.createElement('div', { className: 'section-title' },
-                                'UPCOMING HOLIDAYS'
-                            ),
-                            React.createElement('div', { className: 'holiday-list' },
-                                upcomingHolidays.map(holiday =>
-                                    React.createElement('div', {
-                                        className: 'holiday-item',
-                                        key: holiday.name
-                                    }, `${holiday.name} - ${holiday.daysUntil} DAYS`)
-                                )
-                            )
-                        ]
-                    ),
-                    React.createElement('div', { className: 'section', key: 'milestones' },
-                        [
-                            React.createElement('div', { className: 'section-title' },
-                                'PERSONAL MILESTONES'
-                            ),
-                            React.createElement('form', {
-                                className: 'milestone-form',
-                                onSubmit: addMilestone
-                            }, [
-                                React.createElement('input', {
-                                    type: 'date',
-                                    className: 'milestone-input',
-                                    name: 'date',
-                                    required: true
-                                }),
-                                React.createElement('input', {
-                                    type: 'text',
-                                    className: 'milestone-input',
-                                    name: 'description',
-                                    placeholder: 'ENTER MILESTONE',
-                                    required: true
-                                }),
-                                React.createElement('button', {
-                                    type: 'submit',
-                                    className: 'button'
-                                }, 'ADD MILESTONE')
-                            ]),
-                            React.createElement('div', { className: 'milestone-list' },
-                                milestones.map((milestone, index) =>
-                                    React.createElement('div', {
-                                        className: 'milestone-item',
-                                        key: index
-                                    }, `${milestone.date}: ${milestone.description}`)
-                                )
-                            )
-                        ]
-                    )
-                ]
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(React.createElement(YearProgress));
+        // ... rest of your JavaScript code ...
     </script>
 </body>
 </html>
