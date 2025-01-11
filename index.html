@@ -6,6 +6,7 @@
     <title>Year Progress 2025</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* (All the CSS remains exactly the same as in the previous version) */
         @property --progress {
             syntax: '<percentage>';
             inherits: false;
@@ -399,15 +400,11 @@
                 'div',
                 { className: `container ${isFullscreen ? 'fullscreen' : ''}` },
                 [
-                    React.createElement('div', { className: 'button-group', key: 'buttons' },
-                        [
-                            React.createElement('button', {
-                                className: 'button',
-                                onClick: () => document.documentElement.classList.toggle('dark'),
-                                key: 'theme'
-                            }, '⚡ THEME'),
-                            React.createElement('button', {
-                                className: 'button',
-                                onClick: toggleFullscreen,
-                                key: 'fullscreen'
-                            }, isFullscreen ? 'EXIT'
+                    React.createElement('div', { className: 'button-group', key: 'buttons' }, [
+                        React.createElement('button', {
+                            className: 'button',
+                            onClick: () => document.documentElement.classList.toggle('dark'),
+                            key: 'theme'
+                        }, '⚡ THEME'),
+                        React.createElement('button', {
+                            className: '
