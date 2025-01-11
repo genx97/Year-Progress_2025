@@ -3,31 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Year Progress 2025</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <title>Year Progress 2025</title>
     <style>
         :root {
             --bg-color: #C0C0C0;
             --text-color: #800000;
             --progress-bg: #000000;
-            --progress-fill: #800000;
             --card-bg: #ffffff;
-        }
-
-        [data-theme="dark"] {
-            --bg-color: #1a1a1a;
-            --text-color: #ff9999;
-            --progress-bg: #333333;
-            --progress-fill: #ff4444;
-            --card-bg: #2d2d2d;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
         }
 
         body {
@@ -42,44 +24,34 @@
         }
 
         .container {
-            width: 100%;
-            max-width: 800px;
+            width: 90%;
+            max-width: 400px;
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.5s ease-out forwards;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
 
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .header {
+        .button-group {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .button {
             background: var(--text-color);
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 10px;
             cursor: pointer;
-            margin: 0 4px;
-            font-size: 14px;
+            font-size: 16px;
         }
 
-        .button:hover {
-            opacity: 0.9;
+        .progress-section {
+            margin: 20px 0;
         }
 
         .progress-container {
@@ -89,91 +61,56 @@
             border-radius: 16px;
             overflow: hidden;
             position: relative;
-            margin: 20px 0;
+            margin: 10px 0;
         }
 
         .progress-bar {
             height: 100%;
-            background: var(--progress-fill);
-            transition: width 1s ease-in-out;
+            background: var(--text-color);
+            width: 3%;
         }
 
         .progress-text {
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            z-index: 1;
             width: 100%;
             text-align: center;
-            color: white;
-            line-height: 32px;
-            z-index: 1;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 24px;
         }
 
         .card {
             background: var(--card-bg);
-            padding: 16px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid var(--text-color);
         }
 
         .card-title {
             color: var(--text-color);
-            margin-bottom: 12px;
-            font-size: 16px;
-            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 18px;
         }
 
-        .calendar {
+        .month-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 5px;
         }
 
         .month {
-            padding: 8px;
-            text-align: center;
+            padding: 5px;
             background: var(--progress-bg);
             color: white;
-            border-radius: 4px;
-            font-size: 12px;
+            border-radius: 5px;
+            font-size: 14px;
         }
 
-        .month.completed {
-            background: var(--progress-fill);
-        }
-
-        .month.current {
-            border: 2px solid var(--text-color);
-        }
-
-        .holiday-list {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .holiday-item {
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            color: var(--text-color);
-        }
-
-        .season-progress {
-            height: 4px;
-            background: var(--progress-bg);
-            border-radius: 2px;
-            margin-top: 8px;
-            overflow: hidden;
-        }
-
-        .season-bar {
-            height: 100%;
-            background: var(--progress-fill);
-            transition: width 0.3s ease;
+        .current-month {
+            background: var(--text-color);
         }
 
         .fullscreen {
@@ -184,79 +121,53 @@
             height: 100vh;
             margin: 0;
             border-radius: 0;
-            padding: 40px;
-            overflow-y: auto;
-        }
-
-        .milestone-form {
-            margin-top: 12px;
-        }
-
-        .milestone-input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 8px;
-            border: 1px solid var(--text-color);
-            border-radius: 4px;
-            background: var(--card-bg);
-            color: var(--text-color);
-        }
-
-        .milestone-list {
-            margin-top: 12px;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .elapsed-time {
-            text-align: center;
-            color: var(--text-color);
-            margin-top: 16px;
-            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div id="root"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    
     <script>
         const { useState, useEffect } = React;
 
-        const HOLIDAYS_2025 = [
-            { name: "New Year's Day", date: new Date(2025, 0, 1) },
-            { name: "Valentine's Day", date: new Date(2025, 1, 14) },
-            { name: "St. Patrick's Day", date: new Date(2025, 2, 17) },
-            { name: "Easter", date: new Date(2025, 3, 20) },
-            { name: "Memorial Day", date: new Date(2025, 4, 26) },
-            { name: "Independence Day", date: new Date(2025, 6, 4) },
-            { name: "Labor Day", date: new Date(2025, 8, 1) },
-            { name: "Halloween", date: new Date(2025, 9, 31) },
-            { name: "Thanksgiving", date: new Date(2025, 10, 27) },
-            { name: "Christmas", date: new Date(2025, 11, 25) }
+        const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        const HOLIDAYS = [
+            { name: "New Year's Day", date: "2025-01-01" },
+            { name: "Valentine's Day", date: "2025-02-14" },
+            { name: "Memorial Day", date: "2025-05-26" },
+            { name: "Independence Day", date: "2025-07-04" },
+            { name: "Labor Day", date: "2025-09-01" },
+            { name: "Thanksgiving", date: "2025-11-27" },
+            { name: "Christmas", date: "2025-12-25" }
         ];
 
         function YearProgress() {
-            const [progress, setProgress] = useState(0);
-            const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+            const [progress, setProgress] = useState(3);
+            const [remaining, setRemaining] = useState(97);
             const [isFullscreen, setIsFullscreen] = useState(false);
-            const [seasonProgress, setSeasonProgress] = useState(0);
-            const [currentSeason, setCurrentSeason] = useState('');
-            const [elapsedTime, setElapsedTime] = useState('');
-            const [milestones, setMilestones] = useState(() => {
-                try {
-                    return JSON.parse(localStorage.getItem('milestones')) || [];
-                } catch {
-                    return [];
-                }
-            });
+            const [currentMonth, setCurrentMonth] = useState(0);
 
             useEffect(() => {
-                document.documentElement.setAttribute('data-theme', theme);
-                localStorage.setItem('theme', theme);
-            }, [theme]);
+                const calculateProgress = () => {
+                    const now = new Date();
+                    const start = new Date(2025, 0, 1);
+                    const end = new Date(2026, 0, 1);
+                    const total = end - start;
+                    const elapsed = now - start;
+                    const percentage = (elapsed / total) * 100;
+                    setProgress(percentage);
+                    setRemaining(100 - percentage);
+                    setCurrentMonth(now.getMonth());
+                };
 
-            useEffect(() => {
-                localStorage.setItem('milestones', JSON.stringify(milestones));
-            }, [milestones]);
+                calculateProgress();
+                const interval = setInterval(calculateProgress, 60000);
+                return () => clearInterval(interval);
+            }, []);
 
             const toggleFullscreen = () => {
                 if (!document.fullscreenElement) {
@@ -268,142 +179,70 @@
                 }
             };
 
-            const calculateSeasonProgress = (now) => {
-                const seasons = {
-                    Winter: { start: new Date(2024, 11, 21), end: new Date(2025, 2, 20) },
-                    Spring: { start: new Date(2025, 2, 20), end: new Date(2025, 5, 21) },
-                    Summer: { start: new Date(2025, 5, 21), end: new Date(2025, 8, 23) },
-                    Fall: { start: new Date(2025, 8, 23), end: new Date(2025, 11, 21) }
-                };
-
-                for (const [season, { start, end }] of Object.entries(seasons)) {
-                    if (now >= start && now < end) {
-                        setCurrentSeason(season);
-                        const total = end - start;
-                        const elapsed = now - start;
-                        setSeasonProgress((elapsed / total) * 100);
-                        break;
-                    }
-                }
-            };
-
-            useEffect(() => {
-                const calculateProgress = () => {
-                    const now = new Date();
-                    const start = new Date(2025, 0, 1);
-                    const end = new Date(2026, 0, 1);
-                    const total = end - start;
-                    const elapsed = now - start;
-                    const percentage = (elapsed / total) * 100;
-                    
-                    setProgress(percentage);
-                    calculateSeasonProgress(now);
-
-                    // Calculate time elapsed
-                    const days = Math.floor(elapsed / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((elapsed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    setElapsedTime(`${days} days and ${hours} hours since New Year's Day`);
-                };
-
-                calculateProgress();
-                const interval = setInterval(calculateProgress, 60000);
-                return () => clearInterval(interval);
-            }, []);
-
-            const months = [
-                "January", "February", "March", "April",
-                "May", "June", "July", "August",
-                "September", "October", "November", "December"
-            ];
-
-            const currentMonth = new Date().getMonth();
-
-            const addMilestone = (e) => {
-                e.preventDefault();
-                const date = e.target.date.value;
-                const description = e.target.description.value;
-                if (date && description) {
-                    setMilestones(prev => [...prev, { date, description }]);
-                    e.target.reset();
-                }
-            };
-
-            const exportData = () => {
-                const data = {
-                    progress,
-                    milestones,
-                    theme,
-                    timestamp: new Date().toISOString()
-                };
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'year-progress-2025.json';
-                a.click();
-                URL.revokeObjectURL(url);
-            };
-
             return React.createElement(
                 'div',
                 { className: `container ${isFullscreen ? 'fullscreen' : ''}` },
                 [
-                    React.createElement('div', { className: 'header', key: 'header' }, [
-                        React.createElement('button', {
-                            className: 'button',
-                            onClick: () => setTheme(t => t === 'light' ? 'dark' : 'light'),
-                            key: 'theme-toggle'
-                        }, `${theme === 'light' ? '🌙' : '☀️'} Theme`),
-                        React.createElement('button', {
-                            className: 'button',
-                            onClick: toggleFullscreen,
-                            key: 'fullscreen-toggle'
-                        }, isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen')
-                    ]),
-
-                    React.createElement('div', { className: 'progress-container', key: 'progress' }, [
-                        React.createElement('div', {
-                            className: 'progress-bar',
-                            style: { width: `${progress}%` }
-                        }),
-                        React.createElement('div', { className: 'progress-text' },
-                            `2025 is ${progress.toFixed(1)}% complete.`)
-                    ]),
-
-                    React.createElement('div', { className: 'grid', key: 'grid' }, [
-                        // Calendar Card
-                        React.createElement('div', { className: 'card', key: 'calendar' }, [
-                            React.createElement('div', { className: 'card-title' }, 'Monthly Progress'),
-                            React.createElement('div', { className: 'calendar' },
-                                months.map((month, index) =>
+                    React.createElement('div', { className: 'button-group', key: 'buttons' },
+                        [
+                            React.createElement('button', {
+                                className: 'button',
+                                onClick: () => document.documentElement.classList.toggle('dark'),
+                                key: 'theme'
+                            }, '🌙 Theme'),
+                            React.createElement('button', {
+                                className: 'button',
+                                onClick: toggleFullscreen,
+                                key: 'fullscreen'
+                            }, 'Enter Fullscreen')
+                        ]
+                    ),
+                    React.createElement('div', { className: 'progress-section', key: 'progress' },
+                        [
+                            React.createElement('div', { className: 'progress-container' },
+                                [
                                     React.createElement('div', {
-                                        className: `month ${index < currentMonth ? 'completed' : ''} ${index === currentMonth ? 'current' : ''}`,
+                                        className: 'progress-bar',
+                                        style: { width: `${progress}%` }
+                                    }),
+                                    React.createElement('div', { className: 'progress-text' },
+                                        `2025 is ${progress.toFixed(1)}% complete.`
+                                    )
+                                ]
+                            )
+                        ]
+                    ),
+                    React.createElement('div', { className: 'card', key: 'calendar' },
+                        [
+                            React.createElement('div', { className: 'card-title' },
+                                'Monthly Progress'
+                            ),
+                            React.createElement('div', { className: 'month-grid' },
+                                MONTHS.map((month, index) =>
+                                    React.createElement('div', {
+                                        className: `month ${index === currentMonth ? 'current-month' : ''}`,
                                         key: month
                                     }, month)
                                 )
                             )
-                        ]),
-
-                        // Season Card
-                        React.createElement('div', { className: 'card', key: 'season' }, [
-                            React.createElement('div', { className: 'card-title' }, 'Season Progress'),
-                            React.createElement('div', {}, `Current Season: ${currentSeason}`),
-                            React.createElement('div', { className: 'season-progress' },
-                                React.createElement('div', {
-                                    className: 'season-bar',
-                                    style: { width: `${seasonProgress}%` }
-                                })
+                        ]
+                    ),
+                    React.createElement('div', { className: 'card', key: 'remaining' },
+                        [
+                            React.createElement('div', { className: 'card-title' },
+                                'Remaining'
+                            ),
+                            React.createElement('div', {},
+                                `${remaining.toFixed(1)}% remaining`
                             )
-                        ]),
+                        ]
+                    )
+                ]
+            );
+        }
 
-                        // Holidays Card
-                        React.createElement('div', { className: 'card', key: 'holidays' }, [
-                            React.createElement('div', { className: 'card-title' }, 'Upcoming Holidays'),
-                            React.createElement('div', { className: 'holiday-list' },
-                                HOLIDAYS_2025
-                                    .filter(holiday => holiday.date > new Date())
-                                    .map(holiday =>
-                                        React.createElement('div', {
-                                            className: 'holiday-item',
-                                            key: holiday.name
-                                        }, `${holiday.name
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(YearProgress));
+    </script>
+</body>
+</html>
