@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Year Progress 2025</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #E5E7EB;
-            --text-color: #374151;
-            --blue: #0066FF;
-            --gray-light: #F3F4F6;
+            --background-color: #C0C0C0;
+            --text-color: #8B0000;
+            --progress-bg: #000000;
+            --progress-color: #8B0000;
         }
 
         * {
@@ -20,115 +19,80 @@
         }
 
         body {
-            background-color: var(--bg-color);
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', system-ui;
+            background-color: var(--background-color);
+            font-family: -apple-system, BlinkMacSystemFont, system-ui;
             color: var(--text-color);
-            line-height: 1.6;
-            padding: 16px;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 100%;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 600px;
         }
 
-        .controls {
-            display: flex;
-            gap: 12px;
+        .completion-text {
+            font-size: 24px;
             margin-bottom: 20px;
-        }
-
-        .control-button {
-            background: none;
-            border: none;
-            color: var(--blue);
-            font-size: 14px;
-            cursor: pointer;
-            padding: 8px;
-            font-weight: 500;
-        }
-
-        .progress-text {
-            font-size: 16px;
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-
-        .months-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .month {
-            font-size: 16px;
             color: var(--text-color);
         }
 
-        .current-month {
-            color: var(--blue);
+        .progress-container {
+            width: 100%;
+            height: 40px;
+            background: var(--progress-bg);
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
         }
 
-        .remaining {
-            margin-bottom: 24px;
+        .progress-bar {
+            height: 100%;
+            background: var(--progress-color);
+            width: 2.8%;
         }
 
-        .remaining-percentage {
-            font-size: 16px;
-            color: var(--blue);
-            margin-top: 8px;
+        .remaining-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            width: 100%;
         }
 
-        .holiday-item {
-            font-size: 16px;
+        .countdown-text {
+            font-size: 24px;
+            margin: 20px 0;
             color: var(--text-color);
-            margin-bottom: 12px;
         }
 
-        .milestone-form {
-            margin: 16px 0;
-            display: flex;
-            gap: 8px;
+        .info-text {
+            font-size: 24px;
+            margin: 20px 0;
+            color: var(--text-color);
         }
 
-        .milestone-input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .milestone-button {
-            background: var(--blue);
+        .share-button {
+            background: #8B0000;
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 15px 30px;
+            font-size: 20px;
+            border-radius: 8px;
             cursor: pointer;
+            margin-top: 20px;
         }
 
-        .milestone-item {
-            font-size: 16px;
-            color: var(--text-color);
-            margin-bottom: 12px;
-        }
-
-        .year-label {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            font-size: 24px;
-            color: var(--text-color);
-            opacity: 0.5;
+        .share-button:hover {
+            background: #660000;
         }
     </style>
 </head>
