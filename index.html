@@ -43,7 +43,6 @@
 
         body {
             background-color: var(--gray2);
-            transition: background-color var(--trans-dur) var(--trans-timing);
             font-family: 'Inter', system-ui;
             min-height: 100vh;
             display: flex;
@@ -53,6 +52,7 @@
             font-size: 14px;
             line-height: 1.5;
             padding: 20px;
+            transition: background-color var(--trans-dur) var(--trans-timing);
         }
 
         .container {
@@ -85,7 +85,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .button::before {
             content: '';
             position: absolute;
@@ -104,7 +104,7 @@
             color: var(--gray0);
             transform: translateY(-2px);
         }
-        
+
         .button:hover::before {
             transform: translate(-50%, -50%) scale(1);
         }
@@ -128,7 +128,7 @@
             transition: width var(--trans-dur) var(--trans-timing);
             position: relative;
         }
-        
+
         .progress-bar::after {
             content: '';
             position: absolute;
@@ -143,7 +143,7 @@
             );
             animation: shine 2s infinite;
         }
-        
+
         @keyframes shine {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
@@ -288,6 +288,19 @@
                 font-size: 20px;
             }
         }
+
+        .dark {
+            --gray0: hsl(var(--hue),var(--sat),10%);
+            --gray1: hsl(var(--hue),var(--sat),15%);
+            --gray2: hsl(var(--hue),var(--sat),20%);
+            --gray3: hsl(var(--hue),var(--sat),25%);
+            --gray4: hsl(var(--hue),var(--sat),30%);
+            --gray5: hsl(var(--hue),var(--sat),40%);
+            --gray6: hsl(var(--hue),var(--sat),50%);
+            --gray7: hsl(var(--hue),var(--sat),60%);
+            --gray8: hsl(var(--hue),var(--sat),70%);
+            --gray9: hsl(var(--hue),var(--sat),80%);
+        }
     </style>
 </head>
 <body>
@@ -297,9 +310,104 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     
     <script>
-        // Your existing React code remains the same
         const { useState, useEffect } = React;
-        // ... rest of your JavaScript code ...
-    </script>
-</body>
-</html>
+
+        const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        
+        const HOLIDAYS = [
+            { name: "NEW YEAR'S DAY", date: new Date(2025, 0, 1) },
+            { name: "VALENTINE'S DAY", date: new Date(2025, 1, 14) },
+            { name: "MEMORIAL DAY", date: new Date(2025, 4, 26) },
+            { name: "INDEPENDENCE DAY", date: new Date(2025, 6, 4) },
+            { name: "LABOR DAY", date: new Date(2025, 8, 1) },
+            { name: "HALLOWEEN", date: new Date(2025, 9, 31) },
+            { name: "THANKSGIVING", date: new Date(2025, 10, 27) },
+            { name: "CHRISTMAS", date: new Date(2025, 11, 25) }
+        ];
+
+        function YearProgress() {
+            const [progress, setProgress] = useState(2.7);
+            const [remaining, setRemaining] = useState(97.3);
+            const [isFullscreen, setIsFullscreen] = useState(false);
+            const [currentMonth, setCurrentMonth] = useState(0);
+            const [upcomingHolidays, setUpcomingHolidays] = useState([]);
+            const [milestones, setMilestones] = useState(() => {
+                try {
+                    return JSON.parse(localStorage.getItem('milestones')) || [];
+                } catch {
+                    return [];
+                }
+            });
+
+            const updateHolidays = (now) => {
+                const upcoming = HOLIDAYS
+                    .filter(holiday => holiday.date > now)
+                    .sort((a, b) => a.date - b.date)
+                    .slice(0, 3)
+                    .map(holiday => ({
+                        ...holiday,
+                        daysUntil: Math.ceil((holiday.date - now) / (1000 * 60 * 60 * 24))
+                    }));
+                setUpcomingHolidays(upcoming);
+            };
+
+            useEffect(() => {
+                const calculateProgress = () => {
+                    const now = new Date();
+                    const start = new Date(2025, 0, 1);
+                    const end = new Date(2026, 0, 1);
+                    const total = end - start;
+                    const elapsed = now - start;
+                    const percentage = (elapsed / total) * 100;
+                    
+                    setProgress(percentage);
+                    setRemaining(100 - percentage);
+                    setCurrentMonth(now.getMonth());
+                    updateHolidays(now);
+                };
+
+                calculateProgress();
+                const interval = setInterval(calculateProgress, 60000);
+                return () => clearInterval(interval);
+            }, []);
+
+            useEffect(() => {
+                localStorage.setItem('milestones', JSON.stringify(milestones));
+            }, [milestones]);
+
+            const toggleFullscreen = () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                    setIsFullscreen(true);
+                } else {
+                    document.exitFullscreen();
+                    setIsFullscreen(false);
+                }
+            };
+
+            const addMilestone = (e) => {
+                e.preventDefault();
+                const date = e.target.date.value;
+                const description = e.target.description.value.toUpperCase();
+                if (date && description) {
+                    setMilestones(prev => [...prev, { date, description }]);
+                    e.target.reset();
+                }
+            };
+
+            return React.createElement(
+                'div',
+                { className: `container ${isFullscreen ? 'fullscreen' : ''}` },
+                [
+                    React.createElement('div', { className: 'button-group', key: 'buttons' },
+                        [
+                            React.createElement('button', {
+                                className: 'button',
+                                onClick: () => document.documentElement.classList.toggle('dark'),
+                                key: 'theme'
+                            }, '⚡ THEME'),
+                            React.createElement('button', {
+                                className: 'button',
+                                onClick: toggleFullscreen,
+                                key: 'fullscreen'
+                            }, isFullscreen ? 'EXIT'
