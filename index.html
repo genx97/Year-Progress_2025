@@ -6,345 +6,134 @@
     <title>Year Progress 2025</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* (All your existing CSS remains exactly the same) */
-        @property --progress {
-            syntax: '<percentage>';
-            inherits: false;
-            initial-value: 0%;
-        }
-        
         :root {
-            --hue: 223;
-            --sat: 20%;
-            --gray0: hsl(0,0%,100%);
-            --gray1: hsl(var(--hue),var(--sat),90%);
-            --gray2: hsl(var(--hue),var(--sat),80%);
-            --gray3: hsl(var(--hue),var(--sat),70%);
-            --gray4: hsl(var(--hue),var(--sat),60%);
-            --gray5: hsl(var(--hue),var(--sat),50%);
-            --gray6: hsl(var(--hue),var(--sat),40%);
-            --gray7: hsl(var(--hue),var(--sat),30%);
-            --gray8: hsl(var(--hue),var(--sat),20%);
-            --gray9: hsl(var(--hue),var(--sat),10%);
-            --primary: hsl(var(--hue),90%,50%);
-            --primary-t: hsla(var(--hue),90%,50%,0);
-            --success: hsl(153,90%,40%);
-            --danger: hsl(3,90%,60%);
-            --neutral: var(--gray5);
-            --trans-dur: 0.3s;
-            --trans-timing: cubic-bezier(0.65,0,0.35,1);
+            --bg-color: #E5E7EB;
+            --text-color: #374151;
+            --blue: #0066FF;
+            --gray-light: #F3F4F6;
         }
 
         * {
-            border: 0;
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-        }
-
-        html {
-            height: 100%;
+            box-sizing: border-box;
         }
 
         body {
-    background-color: var(--gray2);
-    font-family: 'Inter', system-ui;
-    min-height: 100vh;
-    height: 100%;
-    display: flex;
-    justify-content: flex-start;  /* Changed from center */
-    align-items: center;
-    color: var(--gray7);
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 0;  /* Remove padding */
-    margin: 0;   /* Remove margin */
-    transition: background-color var(--trans-dur) var(--trans-
+            background-color: var(--bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', system-ui;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 16px;
+            min-height: 100vh;
         }
 
-        .milky {
-            font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
-            text-transform: uppercase;
-            display: block;
-            font-size: 92px;
-            color: #f1ebe5;
-            text-shadow: 0 8px 9px #c4b59d, 0px -2px 1px #fff;
-            font-weight: bold;
-            letter-spacing: -4px;
-            text-align: center;
-            background: linear-gradient(to bottom, #ece4d9 0%,#e9dfd1 100%);
-            position: absolute;
-            padding: 100px 200px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-            border-radius: 20px;
-            z-index: 10;
-            opacity: 0;
-            transition: opacity var(--trans-dur) var(--trans-timing);
-            pointer-events: none;
-        }
-
-        .container.show-milky + .milky {
-            opacity: 1;
-        }
-
-      
         .container {
-    width: 100%;
-    max-width: 600px;
-    background: var(--gray0);
-    padding: 20px;
-    margin: 0 auto;  /* Center container */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-                                
-        .button-group {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .controls {
             display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-bottom: 32px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        .button {
-            background: var(--gray2);
-            color: var(--gray7);
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Inter', system-ui;
+        .control-button {
+            background: none;
+            border: none;
+            color: var(--blue);
             font-size: 14px;
+            cursor: pointer;
+            padding: 8px;
             font-weight: 500;
-            transition: all var(--trans-dur) var(--trans-timing);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 150%;
-            height: 150%;
-            background: var(--primary);
-            border-radius: 50%;
-            transform: translate(-150%, -50%) scale(0);
-            transition: transform var(--trans-dur) var(--trans-timing);
-            z-index: -1;
-        }
-
-        .button:hover {
-            color: var(--gray0);
-            transform: translateY(-2px);
-        }
-
-        .button:hover::before {
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 48px;
-            background: var(--gray2);
-            border-radius: 24px;
-            overflow: hidden;
-            position: relative;
-            margin: 32px 0;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, 
-                var(--primary) 0%,
-                hsl(calc(var(--hue) + 20),90%,55%) 100%
-            );
-            transition: width var(--trans-dur) var(--trans-timing);
-            position: relative;
-        }
-
-        .progress-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(
-                90deg,
-                hsla(var(--hue),90%,70%,0.2) 0%,
-                hsla(var(--hue),90%,70%,0) 20%
-            );
-            animation: shine 2s infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
         }
 
         .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--gray0);
-            z-index: 1;
-            width: 100%;
-            text-align: center;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .section {
-            margin: 32px 0;
-            padding: 24px;
-            border-radius: 12px;
-            background: var(--gray1);
-            transition: all var(--trans-dur) var(--trans-timing);
-        }
-
-        .section:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 32px rgba(var(--hue), 20%, 10%, 0.1);
-            background: linear-gradient(
-                135deg,
-                var(--gray1) 0%,
-                var(--gray0) 100%
-            );
+            font-size: 16px;
+            margin-bottom: 24px;
         }
 
         .section-title {
-            color: var(--gray8);
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            margin-bottom: 24px;
-            text-align: center;
+            margin-bottom: 16px;
         }
 
-        .month-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+        .months-list {
+            display: flex;
+            flex-direction: column;
             gap: 12px;
+            margin-bottom: 24px;
         }
 
         .month {
-            padding: 12px 8px;
-            background: var(--gray2);
-            color: var(--gray7);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 14px;
-            transition: all var(--trans-dur) var(--trans-timing);
+            font-size: 16px;
+            color: var(--text-color);
         }
 
         .current-month {
-            background: var(--primary);
-            color: var(--gray0);
+            color: var(--blue);
         }
 
-        .remaining-text {
-            text-align: center;
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-top: 16px;
+        .remaining {
+            margin-bottom: 24px;
         }
 
-        .holiday-list, .milestone-list {
-            margin-top: 24px;
+        .remaining-percentage {
+            font-size: 16px;
+            color: var(--blue);
+            margin-top: 8px;
         }
 
-        .holiday-item, .milestone-item {
-            padding: 16px;
+        .holiday-item {
+            font-size: 16px;
+            color: var(--text-color);
             margin-bottom: 12px;
-            background: var(--gray2);
-            border-radius: 8px;
-            font-size: 14px;
-            color: var(--gray7);
-            transition: all var(--trans-dur) var(--trans-timing);
-        }
-
-        .holiday-item:hover, .milestone-item:hover {
-            background: var(--gray3);
-            transform: translateX(4px);
         }
 
         .milestone-form {
+            margin: 16px 0;
             display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin: 24px 0;
+            gap: 8px;
         }
 
         .milestone-input {
-            padding: 12px;
-            border: 2px solid var(--gray3);
-            border-radius: 8px;
-            background: var(--gray0);
-            color: var(--gray7);
-            font-family: 'Inter', system-ui;
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             font-size: 14px;
-            transition: all var(--trans-dur) var(--trans-timing);
         }
 
-        .milestone-input:focus {
-            border-color: var(--primary);
-            outline: none;
+        .milestone-button {
+            background: var(--blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
         }
 
-        .fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            margin: 0;
-            border-radius: 0;
-            overflow-y: auto;
+        .milestone-item {
+            font-size: 16px;
+            color: var(--text-color);
+            margin-bottom: 12px;
         }
 
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px;
-            }
-
-            .button {
-                padding: 10px 20px;
-                font-size: 12px;
-            }
-
-            .section-title {
-                font-size: 16px;
-            }
-
-            .remaining-text {
-                font-size: 20px;
-            }
-
-            .milky {
-                font-size: 48px;
-                padding: 50px 100px;
-            }
-        }
-
-        .dark {
-            --gray0: hsl(var(--hue),var(--sat),10%);
-            --gray1: hsl(var(--hue),var(--sat),15%);
-            --gray2: hsl(var(--hue),var(--sat),20%);
-            --gray3: hsl(var(--hue),var(--sat),25%);
-            --gray4: hsl(var(--hue),var(--sat),30%);
-            --gray5: hsl(var(--hue),var(--sat),40%);
-            --gray6: hsl(var(--hue),var(--sat),50%);
-            --gray7: hsl(var(--hue),var(--sat),60%);
-            --gray8: hsl(var(--hue),var(--sat),70%);
-            --gray9: hsl(var(--hue),var(--sat),80%);
+        .year-label {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            font-size: 24px;
+            color: var(--text-color);
+            opacity: 0.5;
         }
     </style>
 </head>
 <body>
     <div id="root"></div>
-    <div class="milky">2025</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <script src="script.js"></script>
