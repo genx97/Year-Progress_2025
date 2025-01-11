@@ -47,20 +47,19 @@
         }
 
         body {
-            background-color: var(--gray2);
-            font-family: 'Inter', system-ui;
-            min-height: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--gray7);
-            font-size: 14px;
-            line-height: 1.5;
-            padding: 20px;
-            transition: background-color var(--trans-dur) var(--trans-timing);
-            position: relative;
-            overflow-x: hidden;
+    background-color: var(--gray2);
+    font-family: 'Inter', system-ui;
+    min-height: 100vh;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;  /* Changed from center */
+    align-items: center;
+    color: var(--gray7);
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 0;  /* Remove padding */
+    margin: 0;   /* Remove margin */
+    transition: background-color var(--trans-dur) var(--trans-
         }
 
         .milky {
@@ -90,16 +89,16 @@
             opacity: 1;
         }
 
+      
         .container {
-            width: 90%;
-            max-width: 600px;
-            background: var(--gray0);
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: all var(--trans-dur) var(--trans-timing);
-        }
-
+    width: 100%;
+    max-width: 600px;
+    background: var(--gray0);
+    padding: 20px;
+    margin: 0 auto;  /* Center container */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+                                
         .button-group {
             display: flex;
             justify-content: center;
